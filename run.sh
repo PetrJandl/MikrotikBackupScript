@@ -27,13 +27,13 @@ function backup {
 	scp -q -B $USER@$1:/$name.rsc zalohy/$name/$name.rsc 
 	scp -q -B $USER@$1:/$name.backup zalohy/$name/$name.backup 
 	ssh -oBatchMode=yes $USER@$1 "/file remove $name.rsc; /file remove $name.backup"
-	if [ "$name" == "TheDude" ]; then
+	if [ "$name" == "TheDude_______" ]; then
 	    ssh -oBatchMode=yes $USER@$1 "/dude export-db backup-file=$name" > /dev/null 2>&1
 	fi
 	## tichy prenos vsech ostatnich souboru -q -r
 	## puvodni reseni bezpecne ale nefunkcni scp -B -r $USER@$1:/ zalohy/$name/files/
 	wget -q -r -nH -P zalohy/$name/files ftp://$1/* --ftp-user=$USER --ftp-password=$PASS
-	if [ "$name" == "TheDude" ]; then
+	if [ "$name" == "TheDude_______" ]; then
 	    ssh -oBatchMode=yes $USER@$1 "/file remove $name"
 	fi
     else                                              
