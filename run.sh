@@ -41,25 +41,32 @@ function backup {
 	echo $name nebylo mozne zalohovat neni ping na $1!
     fi
 }
-
-echo "Zalohovani jednotlivych RB s vypisem verzi a Bad Blocks"
-echo "Pojmenovani   		verze package		vezre firmware		bad blocks"
-backup 192.168.133.252 "TheDude_______"
-backup 192.168.133.254 "Iris__________"
-echo "___Pobocky______________________"
-backup 192.168.11.200 "Kukleny_______"
-backup 192.168.12.200 "Malsovice_____"
-backup 192.168.13.200 "Slezske_______"
-backup 192.168.15.200 "NHK___________"
-backup 192.168.16.200 "Labska________"
-backup 192.168.17.200 "MPB___________"
-backup 192.168.19.200 "MPA___________"
-backup 192.168.22.200 "Plotiste______"
-backup 192.168.24.200 "Placice_______"
-backup 192.168.25.200 "Brezhrad______"
-echo "--------------------------------------"
-backup 192.168.20.254 "Kosicky_______"
-backup 10.107.193.26  "Kosicky-Antena"
+if [ -z "$1"  ]; then
+    #echo Jede kompletni zalohovani
+    #read -n 1 -s -r -p "Press any key to continue"
+    echo "Zalohovani jednotlivych RB s vypisem verzi a Bad Blocks"
+    echo "Pojmenovani   		verze package		vezre firmware		bad blocks"
+    backup 192.168.133.252 "TheDude_______"
+    backup 192.168.133.254 "Iris__________"
+    echo "___Pobocky______________________"
+    backup 192.168.11.200 "Kukleny_______"
+    backup 192.168.12.200 "Malsovice_____"
+    backup 192.168.13.200 "Slezske_______"
+    backup 192.168.15.200 "NHK___________"
+    backup 192.168.16.200 "Labska________"
+    backup 192.168.17.200 "MPB___________"
+    backup 192.168.19.200 "MPA___________"
+    backup 192.168.22.200 "Plotiste______"
+    backup 192.168.24.200 "Placice_______"
+    backup 192.168.25.200 "Brezhrad______"
+    echo "--------------------------------------"
+    backup 192.168.20.254 "Kosicky_______"
+    backup 10.107.193.26  "Kosicky-Antena"
+else
+    echo Zalohuje se jen LTEmodem
+    #read -n 1 -s -r -p "Press any key to continue"
+    backup 10.253.36.174  "HKFReeLTEmodem"
+fi
 
 echo "-----------------------------------"
 echo "Duplicity - verzovani zaloh"
@@ -68,11 +75,11 @@ if mountpoint -q /mnt/backups; then
 	umount /mnt/backups
 fi
 mount /mnt/backups
-duplicity remove-all-but-n-full 3 --no-print-statistics --verbosity error file:///mnt/backups/OFFLINE/Mikrotiky/duplicity
+duplicity remove-all-but-n-full 2 --no-print-statistics --verbosity error file:///mnt/backups/OFFLINE/Mikrotiky/duplicity
 duplicity --no-print-statistics --verbosity error --full-if-older-than 30D --no-encryption zalohy file:///mnt/backups/OFFLINE/Mikrotiky/duplicity
-RemoveOld=$( duplicity remove-all-but-n-full 3 --no-print-statistics --verbosity error file:///mnt/backups/OFFLINE/Mikrotiky/duplicity 2>&1 | head -n 1 )
+RemoveOld=$( duplicity remove-all-but-n-full 2 --no-print-statistics --verbosity error file:///mnt/backups/OFFLINE/Mikrotiky/duplicity 2>&1 | head -n 1 )
 
-if [[ "$RemoveOld" != "Backup source directory remove-all-but-3-full does not exist." ]]; then
+if [[ "$RemoveOld" != "Backup source directory remove-all-but-2-full does not exist." ]]; then
 	echo $RemoveOld
 fi
 echo "-----------------------------------"
@@ -82,5 +89,3 @@ cd zalohy
 rsync -azh --archive --delete-during . /mnt/backups/OFFLINE/Mikrotiky/AktualniZalohy
 cd ..
 umount /mnt/backups
-
-##read -n 1 -s -r -p "Press any key to continue"
